@@ -1,5 +1,7 @@
 package mainTree;
 
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class AVLTree<T extends Comparable<T>> {
 
@@ -320,24 +322,75 @@ public class AVLTree<T extends Comparable<T>> {
 	/**
 	 * Returns the arithmetric mean of all the balance factors of the nodes in
 	 * the ALVTree
+	 * 
 	 * @return
 	 */
 	public double factorBalanceMedio() {
 		return getRoot().getChildsBFTotal()
 				+ getRoot().getBF() / getRoot().getChilds() + 1;
 	}
-	
+
 	/**
 	 * Returns the brother of the given element
+	 * 
 	 * @param elem
 	 * @return
 	 */
-	public T getHermano(T elem) {
-		return null;
+	private T getHermano(AVLNode<T> root, T elem) {
+		int flag = 0;
+		T brother = null;
+		if (root == null)
+			throw new RuntimeException("The given root is null");
+
+		// Stores nodes level wise
+		Queue<AVLNode<T>> q = new LinkedList<>();
+
+		// Push the root
+		q.add(root);
+
+		// Continue until all
+		// levels are traversed
+		while (!q.isEmpty()) {
+			// Stores current node
+			AVLNode<T> temp = q.peek();
+			q.remove();
+
+			// Enqueue all children
+			// of the current node
+			for (int i = 0; i < temp.getChilds(); i++) {
+				// If node value is found
+				if (temp.getListOfChilds().get(i).getElement() == elem) {
+					flag = 1;
+
+					// Print all children of current
+					// node
+					// except value as the answer
+					for (int j = 0; j < temp.getChilds(); j++) {
+						if (elem != temp.getListOfChilds().get(j).getElement())
+							System.out.print(
+									temp.getListOfChilds().get(j).getElement()
+											+ " ");
+						brother = temp.getListOfChilds().get(j).getElement();
+					}
+					break;
+				}
+
+				// Push the child nodes
+				// of temp into the queue
+				q.add(temp.getListOfChilds().get(i));
+			}
+		}
+
+		if (flag == 0) {
+			System.out.print("No siblings!!");
+			return null;
+		}
+		return brother;
 	}
-	
+
 	/**
 	 * Returns the tree which is the difference between this tree and the given
+	 * 
 	 * @param tree
 	 * @return
 	 */

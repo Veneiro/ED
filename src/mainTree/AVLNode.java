@@ -1,5 +1,10 @@
 package mainTree;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.management.RuntimeErrorException;
+
 public class AVLNode<T extends Comparable<T>> {
 
 	// ATTRIBUTES
@@ -7,6 +12,7 @@ public class AVLNode<T extends Comparable<T>> {
 	private AVLNode<T> right;
 	private AVLNode<T> left;
 	private int height;
+	List<AVLNode<T>> childs = new ArrayList<AVLNode<T>>();
 
 	/**
 	 * Constructor for the BSTNode class
@@ -188,5 +194,27 @@ public class AVLNode<T extends Comparable<T>> {
 			return left.getBF() + right.getBF() + left.getChilds()
 					+ right.getChilds();
 		}
+	}
+	
+	public void getChildsList() {
+		if (this.left == null && this.right == null) {
+			throw new RuntimeException("This node has no childs");
+		}
+		if (this.left != null && this.right == null) {
+			childs.add(left);
+			left.getChilds();
+		}
+		if (this.left == null && this.right != null) {
+			childs.add(right);
+			right.getChilds();
+		} else {
+			childs.add(left);
+			childs.add(right);
+			left.getChilds();
+			right.getChilds();
+		}
+	}
+	public List<AVLNode<T>> getListOfChilds(){
+		return this.childs;
 	}
 }
