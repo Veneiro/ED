@@ -57,8 +57,8 @@ public class HashTable<T extends Comparable<T>> {
 			return (Math.abs(element.hashCode()) + attempt) % B;
 		} else if (redispersionType == DOUBLE_HASHING) {
 			Integer aux = R - Math.abs(element.hashCode()) % R;
-			return (Math.abs(element.hashCode()) + (attempt * aux)) % B;
-		} else {
+			return (Math.abs(element.hashCode()) + attempt * aux) % B;
+		} else { // Case Quadratic Probing
 			return (Math.abs(element.hashCode()) + (attempt * attempt)) % B;
 		}
 	}
@@ -78,12 +78,16 @@ public class HashTable<T extends Comparable<T>> {
 	}
 
 	private void add(T element, int attempt) {
-		if (nodes.get(f(element, attempt)).getStatus() == 0 || nodes.get(f(element, attempt)).getStatus() == 2) {
+		boolean out = false;
+		if (!out && f(element, attempt + 1) < B) {
+			if (nodes.get(f(element, attempt)).getStatus() != 0 && nodes.get(f(element, attempt)).getStatus() != 2) {
+				add(element, f(element, attempt + 1));
+			}
+		} else if(nodes.get(f(element, attempt)).getStatus() == 0 || nodes.get(f(element, attempt)).getStatus() == 2){
 			nodes.get(f(element, attempt)).setElement(element);
 			nodes.get(f(element, attempt)).setStatus(HashNode.VALID);
 			validElems++;
-		} else {
-			add(element, f(element, attempt + 1));
+			out = true;
 		}
 
 		if (getLF() > maxLoadFactor) {
@@ -117,7 +121,7 @@ public class HashTable<T extends Comparable<T>> {
 	private void remove(T element, int attempt) {
 		// Stop condition
 		if (nodes.get(f(element, attempt)).getStatus() == HashNode.EMPTY) {
-			throw new RuntimeException("The element is not in the HashNode");
+			throw new RuntimeException("The element is not in the HashTable");
 		}
 
 		if (nodes.get(f(element, attempt)).getElement().equals(element)
@@ -153,8 +157,8 @@ public class HashTable<T extends Comparable<T>> {
 
 	public static int getNextPrimeNumber(int n) {
 		int number = n + 1;
-		while(number >= 0) {
-			if(isPrime(number)) {
+		while (number >= 0) {
+			if (isPrime(number)) {
 				return number;
 			} else {
 				number++;
@@ -165,8 +169,8 @@ public class HashTable<T extends Comparable<T>> {
 
 	public static int getPrevPrimeNumber(int n) {
 		int number = n - 1;
-		while(number >= 0) {
-			if(isPrime(number)) {
+		while (number >= 0) {
+			if (isPrime(number)) {
 				return number;
 			} else {
 				number--;
@@ -181,7 +185,7 @@ public class HashTable<T extends Comparable<T>> {
 	 * @return
 	 */
 	public double getLF() {
-		return (double)validElems / (double)nodes.size();
+		return (double) validElems / (double) nodes.size();
 	}
 
 	public List<HashNode<T>> getNodes() {
