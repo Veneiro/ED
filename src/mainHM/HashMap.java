@@ -78,6 +78,7 @@ public class HashMap<T extends Comparable<T>> {
 	add(element, f(element, 0));
     }
 
+    //void put (T Key, V Value)
     private void add(T element, int attempt) {
 	if (nodes.get(f(element, attempt)).getStatus() == 0
 		|| nodes.get(f(element, attempt)).getStatus() == 2) {
@@ -93,6 +94,7 @@ public class HashMap<T extends Comparable<T>> {
 	}
     }
 
+    //V get (T Key)
     public Object search(int i) {
 	// TODO Auto-generated method stub
 	return null;

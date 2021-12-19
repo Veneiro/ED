@@ -102,10 +102,12 @@ public class AVLNode<T extends Comparable<T>> {
 				getRight().updateHeight();
 				rightHeight = getRight().getHeight();
 
-			} if (getLeft() != null) {
+			}
+			if (getLeft() != null) {
 				getLeft().updateHeight();
 				leftHeight = getLeft().getHeight();
-			} if (rightHeight > leftHeight) {
+			}
+			if (rightHeight > leftHeight) {
 				this.height = rightHeight + 1;
 			} else {
 				this.height = leftHeight + 1;
@@ -114,6 +116,11 @@ public class AVLNode<T extends Comparable<T>> {
 		}
 	}
 
+	/**
+	 * Returns the node balance factor
+	 * 
+	 * @return
+	 */
 	public int getBF() {
 		if (getRight() == null && getLeft() == null) {
 			return 0;
@@ -127,20 +134,59 @@ public class AVLNode<T extends Comparable<T>> {
 
 		return -1;
 	}
-	
+
+	/**
+	 * Copy the node
+	 * 
+	 * @return
+	 */
 	public AVLNode<T> copyNode() {
-        AVLNode<T> left = null;
-        AVLNode<T> right = null;
-        if (this.left != null) {
-            left = this.left.copyNode();
-        }
-        if (this.right != null) {
-            right = this.right.copyNode();
-        }
-        
-        AVLNode<T> a = new AVLNode<T>(this.element);
-        a.setRight(right);
-        a.setLeft(left);
-        return a;
-    }
+		AVLNode<T> left = null;
+		AVLNode<T> right = null;
+		if (this.left != null) {
+			left = this.left.copyNode();
+		}
+		if (this.right != null) {
+			right = this.right.copyNode();
+		}
+
+		AVLNode<T> a = new AVLNode<T>(this.element);
+		a.setRight(right);
+		a.setLeft(left);
+		return a;
+	}
+
+	/**
+	 * Returns the number of childs of a node
+	 * 
+	 * @return
+	 */
+	public int getChilds() {
+		if (this.left == null && this.right == null) {
+			return 0;
+		}
+		if (this.left != null && this.right == null) {
+			return 1 + left.getChilds();
+		}
+		if (this.left == null && this.right != null) {
+			return 1 + right.getChilds();
+		} else {
+			return 2 + left.getChilds() + right.getChilds();
+		}
+	}
+
+	public double getChildsBFTotal() {
+		if (this.left == null && this.right == null) {
+			return 0.0;
+		}
+		if (this.left != null && this.right == null) {
+			return left.getBF() + left.getChilds();
+		}
+		if (this.left == null && this.right != null) {
+			return right.getBF() + right.getChilds();
+		} else {
+			return left.getBF() + right.getBF() + left.getChilds()
+					+ right.getChilds();
+		}
+	}
 }

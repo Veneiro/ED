@@ -104,7 +104,7 @@ public class HashTable<T extends Comparable<T>> {
 				if (nodes.get(f(element, attempt)).getStatus() != HashNode.EMPTY
 						&& nodes.get(f(element, attempt))
 								.getStatus() != HashNode.DELETED) {
-					attempt++;
+					attempt++; //Colision
 				} else {
 					if (nodes.get(f(element, attempt))
 							.getStatus() == HashNode.EMPTY
@@ -142,7 +142,7 @@ public class HashTable<T extends Comparable<T>> {
 			if (pos < B) {
 				if (nodes.get(pos).getStatus() == HashNode.EMPTY
 						|| nodes.get(pos).getStatus() == HashNode.DELETED) {
-					return false;
+					return false; //Colision
 				}
 				if (nodes.get(pos).getStatus() == HashNode.VALID
 						&& nodes.get(pos).getElement().equals(element)) {
@@ -151,7 +151,7 @@ public class HashTable<T extends Comparable<T>> {
 					attempt++;
 				}
 			} else {
-				return false;
+				return false; //Colision
 			}
 			pos = f(element, attempt);
 		}
@@ -180,7 +180,7 @@ public class HashTable<T extends Comparable<T>> {
 						removed = true;
 						validElems--;
 					} else {
-						attempt++;
+						attempt++; //Colision
 					}
 				} else {
 					break;

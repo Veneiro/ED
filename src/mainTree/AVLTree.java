@@ -38,16 +38,18 @@ public class AVLTree<T extends Comparable<T>> {
 		if (node == null) {
 			return new AVLNode<T>(elem);
 		} else {
-			if( elem.compareTo(node.getElement()) == 0){
+			if (elem.compareTo(node.getElement()) == 0) {
 				throw new IllegalArgumentException(
 						"We don't allow repeated elements");
-			} if (elem.compareTo(node.getElement()) < 0) {
+			}
+			if (elem.compareTo(node.getElement()) < 0) {
 				node.setLeft(add(elem, node.getLeft()));
-			} if (elem.compareTo(node.getElement()) > 0) {
+			}
+			if (elem.compareTo(node.getElement()) > 0) {
 				node.setRight(add(elem, node.getRight()));
-			} 
+			}
 		}
-		
+
 		return (updateBF(node));
 	}
 
@@ -90,7 +92,7 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 		return false;
 	}
-	
+
 	public AVLTree<T> joins(AVLTree<T> tree) {
 		AVLTree<T> result = copyTree(this);
 
@@ -103,24 +105,23 @@ public class AVLTree<T extends Comparable<T>> {
 
 		return result;
 	}
-	
+
 	private AVLTree<T> copyTree(AVLTree<T> tree) {
 		AVLTree<T> result = new AVLTree<T>();
 		AVLNode<T> theRoot = getRoot().copyNode();
 		result.setRoot(theRoot);
 		return result;
 	}
-	
-	public T getMax (AVLNode<T> theRoot) {
+
+	public T getMax(AVLNode<T> theRoot) {
 		if (theRoot == null) {
 			return null;
-		}
-		else {
+		} else {
 			return getMaxRec(theRoot);
 		}
 	}
-	
-	private T getMaxRec (AVLNode<T> theRoot) {
+
+	private T getMaxRec(AVLNode<T> theRoot) {
 		if (theRoot.getRight() == null) {
 			return theRoot.getElement();
 		} else {
@@ -186,6 +187,28 @@ public class AVLTree<T extends Comparable<T>> {
 	 * If the node has one node we check for the height of the nodes with get
 	 * height and we add 1
 	 */
+
+	public int getHeight() {
+		return getHeight(root);
+	}
+
+	public int getHeight(AVLNode<T> theRoot) {
+		if (theRoot == null) {
+			return 0;
+		}
+
+		int leftHeight = 0;
+		int rightHeight = 0;
+
+		leftHeight = getHeight(theRoot.getLeft());
+		rightHeight = getHeight(theRoot.getRight());
+
+		if (rightHeight > leftHeight) {
+			return rightHeight + 1;
+		} else {
+			return leftHeight + 1;
+		}
+	}
 
 	/**
 	 * This method can update the tree, by doing rotations if it is necessary
@@ -292,5 +315,42 @@ public class AVLTree<T extends Comparable<T>> {
 		c.updateHeight();
 
 		return b;
+	}
+
+	/**
+	 * Returns the arithmetric mean of all the balance factors of the nodes in
+	 * the ALVTree
+	 * @return
+	 */
+	public double factorBalanceMedio() {
+		return getRoot().getChildsBFTotal()
+				+ getRoot().getBF() / getRoot().getChilds() + 1;
+	}
+	
+	/**
+	 * Returns the brother of the given element
+	 * @param elem
+	 * @return
+	 */
+	public T getHermano(T elem) {
+		return null;
+	}
+	
+	/**
+	 * Returns the tree which is the difference between this tree and the given
+	 * @param tree
+	 * @return
+	 */
+	public AVLTree<T> difference(AVLTree<T> tree) {
+		AVLTree<T> t = copyTree(this);
+
+		while (tree.getRoot() != null) {
+			if (t.search(tree.getRoot().getElement())) {
+				t.remove(tree.getRoot().getElement());
+			}
+			tree.remove(tree.getRoot().getElement());
+		}
+
+		return t;
 	}
 }
